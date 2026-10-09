@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Shopping Cart | LocalStore</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .cart-section {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0 25px;
+            min-height: 400px;
+        }
+
+        .cart-section h1 {
+            color: #172554;
+            margin-bottom: 25px;
+        }
+
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .cart-table th,
+        .cart-table td {
+            padding: 18px;
+            text-align: left;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .cart-table th {
+            background: #eef2ff;
+            color: #172554;
+        }
+
+        .remove-button {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: none;
+            padding: 9px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .cart-summary {
+            margin-top: 25px;
+            text-align: right;
+        }
+
+        .cart-summary h2 {
+            color: #4338ca;
+            margin-bottom: 20px;
+        }
+
+        .cart-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .back-button,
+        .clear-button {
+            padding: 12px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+
+        .back-button {
+            background: #eef2ff;
+            color: #3730a3;
+        }
+
+        .clear-button {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .empty-cart {
+            background: white;
+            padding: 45px 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .empty-cart p {
+            margin: 15px 0 25px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 600px) {
+            .cart-section {
+                padding: 0 12px;
+            }
+
+            .cart-table th,
+            .cart-table td {
+                padding: 10px 6px;
+                font-size: 12px;
+            }
+
+            .cart-actions {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <a href="/" class="logo">Local<span>Store.</span></a>
+
+        <nav>
+            <a href="/">Home</a>
+            <a href="/cart">🛒 Cart {{ cart_count }}</a>
+        </nav>
+    </header>
+
+    <main class="cart-section">
+
+        <h1>🛒 Your Shopping Cart</h1>
+
+        {% if cart_items %}
+
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+
+                    <td>
+                        ₹{{ "%.2f"|format(item.product.price) }}
+                    </td>
+
+                    <td>{{ item.quantity }}</td>
+
+                    <td>
+                        ₹{{ "%.2f"|format(item.subtotal) }}
+                    </td>
+
+                    <td>
+                        <form method="POST"
+                              action="{{ url_for('remove_from_cart', product_id=item.product.id) }}">
+
+                            <button type="submit" class="remove-button">
+                                Remove
+                            </button>
+
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="cart-summary">
+            <h2>Total: ₹{{ "%.2f"|format(total) }}</h2>
+        </div>
+
+        <div class="cart-actions">
+
+            <a href="/" class="back-button">
+                ← Continue Shopping
+            </a>
+
+            <form method="POST" action="{{ url_for('clear_cart') }}"
+                  onsubmit="return confirm('Clear all items from your cart?');">
+
+                <button type="submit" class="clear-button">
+                    Clear Cart
+                </button>
+
+            </form>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-cart">
+            <h2>Your cart is empty!</h2>
+
+            <p>Add some products to your cart to see them here.</p>
+
+            <a href="/" class="shop-button">
+                Start Shopping →
+            </a>
+        </div>
+
+        {% endif %}
+
+    </main>
+
+    <footer>
+        <h3>LocalStore.</h3>
+        <p>Your local shopping destination.</p>
+        <p>© 2026 LocalStore. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

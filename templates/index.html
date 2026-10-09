@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Local Store | Online Shopping</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <a href="/" class="logo">Local<span>Store.</span></a>
+
+        <nav>
+            <a href="/">Home</a>
+            <a href="/cart" class="cart-link">
+                🛒 Cart <span class="cart-count">{{ cart_count }}</span>
+            </a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <p class="tagline">WELCOME TO YOUR LOCAL STORE</p>
+
+            <h1>Everything You Need,<br>
+                <span>All in One Place.</span>
+            </h1>
+
+            <p>
+                Discover useful products at great prices.
+                Browse our collection and shop with ease.
+            </p>
+
+            <a href="#products" class="shop-button">Shop Now →</a>
+        </div>
+    </section>
+
+    <main class="products-section" id="products">
+
+        <div class="section-heading">
+            <div>
+                <p class="tagline">OUR COLLECTION</p>
+                <h2>Featured Products</h2>
+            </div>
+
+            <p>Find something you love.</p>
+        </div>
+
+        <div class="product-grid">
+
+            {% for product in products %}
+
+            <article class="product-card">
+
+                <div class="product-image">
+                    <img src="{{ product.image }}"
+                         alt="{{ product.name }}"
+                         loading="lazy">
+                </div>
+
+                <div class="product-info">
+
+                    <h3>{{ product.name }}</h3>
+
+                    <p class="description">
+                        {{ product.description }}
+                    </p>
+
+                    <div class="product-bottom">
+
+                        <span class="price">
+                            ₹{{ "%.2f"|format(product.price) }}
+                        </span>
+
+                        <form method="POST"
+                              action="{{ url_for('add_to_cart', product_id=product.id) }}">
+
+                            <button type="submit" class="add-button">
+                                + Add
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+    </main>
+
+    <footer>
+        <h3>LocalStore.</h3>
+        <p>Your local shopping destination.</p>
+        <p>© 2026 LocalStore. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
